@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Syntax: ./build.sh hashcalcmt 0.0.1xg-20250126
+# Syntax: ./build.sh hashcalcmt 0.0.1xg-$(date +%Y%m%d)
 
 APP_REALM="criticalsys.net"
 APP_NAME="$1"
 APP_VERSION="$2"
 APP_MODULE="${APP_REALM}/${APP_NAME}"
 
-mkdir -p bin
+mkdir -p bin distrib
 if [ ! -s go.mod ];then
   echo "Initialize Go Module ${APP_MODULE}"
   go mod init ${APP_MODULE}
@@ -23,5 +23,5 @@ chmod 644 *.go go*
 chmod 755 bin/*
 
 if [ "$3" == "--publish" ];then
-  tar Jcvf ../${APP_NAME}-${APP_VERSION%xg*}-amd64.tar.xz *
+  tar Jcvf distrib/${APP_NAME}-${APP_VERSION%xg*}-amd64.tar.xz *
 fi
