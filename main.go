@@ -51,7 +51,7 @@ func main() {
 	filePattern := flag.String("file-pattern", "*", "File pattern to search")
 	path := flag.String("path", ".", "Directory to search")
 	hashType := flag.String("hash", "MD5", "Hash type: MD5, SHA1, SHA256, XXHASH64, BLAKE3")
-	outFile := flag.String("out-file", "hashlist.txt", "File to store the results")
+	outFile := flag.String("out-file", "", "File to store the results")
 	rename := flag.Bool("rename", false, "Rename files to their hash value")
 	display := flag.Bool("display", true, "Display hash values to the user")
 	versionFlag := flag.Bool("version", false, "Display version information")
@@ -142,7 +142,7 @@ func main() {
 			os.Rename(filePath, newPath)
 		}
 
-		if *display {
+		if *display && *outFile == "" {
 			fmt.Printf("%s: %s\n", filePath, hash)
 		}
 	}
