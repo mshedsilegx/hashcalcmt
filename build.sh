@@ -7,7 +7,7 @@ APP_NAME="$1"
 APP_VERSION="$2"
 APP_MODULE="${APP_REALM}/${APP_NAME}"
 
-mkdir -p ../bin ../distrib
+mkdir -p ../../bin ../../distrib
 if [ ! -s go.mod ];then
   echo "Initialize Go Module ${APP_MODULE}"
   go mod init ${APP_MODULE}
@@ -23,5 +23,5 @@ chmod 644 *.go go*
 chmod 755 bin/*
 
 if [ "$3" == "--publish" ];then
-  tar Jcvf ../distrib/${APP_NAME}-${APP_VERSION%xg*}-amd64.tar.xz *
+  tar Jcvf ../../distrib/${APP_NAME}-${APP_VERSION%xg*}-amd64.tar.xz *
 fi
