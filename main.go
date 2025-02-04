@@ -16,7 +16,7 @@ import (
 	"github.com/zeebo/blake3"
 )
 
-var Version string
+var version string
 
 type hashFunc func(data []byte) string
 
@@ -60,7 +60,7 @@ func main() {
 
 	// Version
 	if *versionFlag {
-		fmt.Printf("Hash MT Generator - Version: %s\n", Version)
+		fmt.Printf("Hash MT Generator - Version: %s\n", version)
 		os.Exit(0)
 	}
 
