@@ -60,7 +60,7 @@ func main() {
 
 	// Version
 	if *versionFlag {
-		fmt.Printf("Application Version: %s\n", Version)
+		fmt.Printf("Hash MT Generator - Version: %s\n", Version)
 		os.Exit(0)
 	}
 
