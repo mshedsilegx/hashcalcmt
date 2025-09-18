@@ -31,7 +31,8 @@ func Run(path, filePattern string, numWorkers int, hf hasher.Func) <-chan Result
 
 	// Walk the directory and send jobs.
 	go func() {
-		filepath.Walk(path, func(p string, info os.FileInfo, err error) error {
+		defer close(jobs)
+		if err := filepath.Walk(path, func(p string, info os.FileInfo, err error) error {
 			if err != nil {
 				results <- Result{FilePath: p, Error: err}
 				return nil
@@ -43,8 +44,9 @@ func Run(path, filePattern string, numWorkers int, hf hasher.Func) <-chan Result
 				}
 			}
 			return nil
-		})
-		close(jobs)
+		}); err != nil {
+			results <- Result{Error: fmt.Errorf("error walking path %s: %w", path, err)}
+		}
 	}()
 
 	// Wait for all workers to finish, then close results channel.
@@ -67,11 +69,17 @@ func worker(wg *sync.WaitGroup, jobs <-chan string, results chan<- Result, hf ha
 }
 
 // hashFile opens a file and computes its hash using the provided hasher function.
-func hashFile(filePath string, hf hasher.Func) (string, error) {
+func hashFile(filePath string, hf hasher.Func) (hash string, err error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return "", fmt.Errorf("could not open file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+		if err == nil {
+			err = closeErr
+		}
+	}()
+
 	return hf(file)
 }
