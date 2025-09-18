@@ -15,11 +15,11 @@ import (
 
 // Hash types constants.
 const (
-	HashMD5     = "MD5"
-	HashSHA1    = "SHA1"
-	HashSHA256  = "SHA256"
-	HashXXHash  = "XXHASH64"
-	HashBlake3  = "BLAKE3"
+	HashMD5    = "MD5"
+	HashSHA1   = "SHA1"
+	HashSHA256 = "SHA256"
+	HashXXHash = "XXHASH64"
+	HashBlake3 = "BLAKE3"
 )
 
 // Func is a function type that takes a reader and returns a hash string or an error.
