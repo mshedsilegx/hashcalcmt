@@ -101,15 +101,20 @@ func processResults(results <-chan pipeline.Result, cfg *Config) (map[string]str
 	return output, errs
 }
 
-func writeResultsToFile(filename string, results map[string]string) error {
+func writeResultsToFile(filename string, results map[string]string) (err error) {
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+		if err == nil {
+			err = closeErr
+		}
+	}()
 
 	for filePath, hash := range results {
-		if _, err := file.WriteString(fmt.Sprintf("%s: %s\n", filePath, hash)); err != nil {
+		if _, err = fmt.Fprintf(file, "%s: %s\n", filePath, hash); err != nil {
 			return err
 		}
 	}
