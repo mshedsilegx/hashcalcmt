@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 )
