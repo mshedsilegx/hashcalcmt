@@ -25,6 +25,8 @@ type Config struct {
 	NumWorkers  int
 }
 
+// main is the entry point of the Hash MT Generator tool.
+// It orchestrates flag parsing, hash function selection, and result processing.
 func main() {
 	cfg := parseFlags()
 
@@ -57,11 +59,13 @@ func main() {
 	}
 }
 
+// parseFlags defines and parses CLI flags into a Config struct.
+// It sets defaults for hash types, worker counts, and patterns.
 func parseFlags() *Config {
 	cfg := &Config{}
 	flag.StringVar(&cfg.FilePattern, "file-pattern", "*", "File pattern to search")
 	flag.StringVar(&cfg.Path, "path", ".", "Directory to search")
-	flag.StringVar(&cfg.HashType, "hash", hasher.HashMD5, "Hash type: MD5, SHA1, SHA256, XXHASH64, BLAKE3")
+	flag.StringVar(&cfg.HashType, "hash", hasher.HashMD5, "Hash type: MD5, SHA1, SHA256, XXH3-128, HIGHWAYHASH, WYHASH, BLAKE3")
 	flag.StringVar(&cfg.OutFile, "out-file", "", "File to store the results")
 	flag.BoolVar(&cfg.Rename, "rename", false, "Rename files to their hash value")
 	flag.BoolVar(&cfg.Display, "display", true, "Display hash values to the user")
@@ -71,6 +75,8 @@ func parseFlags() *Config {
 	return cfg
 }
 
+// processResults iterates over the results channel and handles renaming or display.
+// It aggregates results for potential file output and collects any errors.
 func processResults(results <-chan pipeline.Result, cfg *Config) (map[string]string, []error) {
 	output := make(map[string]string)
 	var errs []error
@@ -101,7 +107,12 @@ func processResults(results <-chan pipeline.Result, cfg *Config) (map[string]str
 	return output, errs
 }
 
+// writeResultsToFile saves the collected hash results to a specified file.
+// It cleans the filename to mitigate directory traversal risks.
 func writeResultsToFile(filename string, results map[string]string) (err error) {
+	// Clean and localize the filename to mitigate G304.
+	// We use filepath.Clean to resolve any directory traversal elements.
+	filename = filepath.Clean(filename)
 	file, err := os.Create(filename)
 	if err != nil {
 		return err

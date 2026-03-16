@@ -7,7 +7,8 @@ Hash MT Generator is a high-performance, command-line tool for concurrently hash
 ## Features
 
 - **Concurrent Processing**: Utilizes a worker pool to hash multiple files in parallel, significantly speeding up the process on multi-core systems.
-- **Multiple Hash Algorithms**: Supports a range of hashing algorithms, including MD5, SHA1, SHA256, XXHASH64, and BLAKE3.
+- **Multiple Hash Algorithms**: Supports a wide range of hashing algorithms, including legacy standards (MD5, SHA1), modern cryptographic hashes (SHA256, BLAKE3), and high-performance non-cryptographic hashes (XXH3-128, HighwayHash, Wyhash).
+- **Security-First Design**: Implements `os.Root` (Go 1.24+) to natively prevent directory traversal attacks, ensuring file operations are strictly scoped to the target directory.
 - **Memory Efficient**: Uses a streaming approach to hash files, which means it can handle very large files without consuming a large amount of memory.
 - **Flexible File Discovery**: Can recursively search directories and filter files based on a specified pattern.
 - **Multiple Output Options**:
@@ -24,7 +25,7 @@ The tool is configured via command-line flags:
 |------------------|----------------------------------------------------------|--------------------|
 | `--file-pattern` | File pattern to search for.                              | `*` (all files)    |
 | `--path`         | The directory to search in.                              | `.` (current dir)  |
-| `--hash`         | The hash algorithm to use. (MD5, SHA1, SHA256, XXHASH64, BLAKE3) | `MD5`              |
+| `--hash`         | The hash algorithm to use. (MD5, SHA1, SHA256, XXH3-128, HIGHWAYHASH, WYHASH, BLAKE3) | `MD5`              |
 | `--out-file`     | The file to store the results in.                        | (none)             |
 | `--rename`       | Rename files to their hash value.                        | `false`            |
 | `--display`      | Display hash values to the user.                         | `true`             |
@@ -41,12 +42,12 @@ To compute the MD5 hashes of all files in the current directory and its subdirec
 ./hash-tool
 ```
 
-### Using a Different Hash Algorithm
+### Using a High-Performance Hash
 
-To compute SHA256 hashes for all `.jpg` files in the `/home/user/pictures` directory:
+To compute XXH3-128 hashes for all `.jpg` files in the `/home/user/pictures` directory:
 
 ```bash
-./hash-tool --hash=SHA256 --path=/home/user/pictures --file-pattern="*.jpg"
+./hash-tool --hash=XXH3-128 --path=/home/user/pictures --file-pattern="*.jpg"
 ```
 
 ### Saving Results to a File
@@ -59,8 +60,8 @@ To compute BLAKE3 hashes for all files and save the results to a file named `has
 
 ### Renaming Files to Their Hashes
 
-To rename all `.txt` files in the `documents` directory to their XXHASH64 hash values (the original file extension is preserved):
+To rename all `.txt` files in the `documents` directory to their WYHASH hash values (the original file extension is preserved):
 
 ```bash
-./hash-tool --hash=XXHASH64 --path=documents --file-pattern="*.txt" --rename --display=false
+./hash-tool --hash=WYHASH --path=documents --file-pattern="*.txt" --rename --display=false
 ```
